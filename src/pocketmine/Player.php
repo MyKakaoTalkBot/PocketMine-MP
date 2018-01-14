@@ -111,6 +111,7 @@ use pocketmine\network\mcpe\protocol\DataPacket;
 use pocketmine\network\mcpe\protocol\DisconnectPacket;
 use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\network\mcpe\protocol\InteractPacket;
+use pocketmine\network\mcpe\protocol\InventoryContentPacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ItemFrameDropItemPacket;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
@@ -1330,7 +1331,7 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 		}
 
 		$this->sendSettings();
-		$this->inventory->sendCreativeContents();
+		$this->sendCreativeInventory();
 
 		return true;
 	}
@@ -2093,11 +2094,23 @@ class Player extends Human implements CommandSender, ChunkLoader, IPlayer{
 
 		$this->inventory->sendContents($this);
 		$this->inventory->sendArmorContents($this);
-		$this->inventory->sendCreativeContents();
+		$this->sendCreativeInventory();
 		$this->inventory->sendHeldItem($this);
 
 		$this->server->addOnlinePlayer($this);
 		$this->server->onPlayerCompleteLoginSequence($this);
+	}
+
+	private function sendCreativeInventory() : void{
+		if(!$this->isSpectator()){
+			$this->dataPacket(Item::getCreativeInventoryPacket());
+		}else{
+			$pk = new InventoryContentPacket();
+			$pk->windowId = ContainerIds::CREATIVE;
+			$pk->items = [];
+
+			$this->dataPacket($pk);
+		}
 	}
 
 	/**

@@ -379,19 +379,6 @@ class PlayerInventory extends EntityInventory{
 		}
 	}
 
-	public function sendCreativeContents(){
-		$pk = new InventoryContentPacket();
-		$pk->windowId = ContainerIds::CREATIVE;
-
-		if(!$this->getHolder()->isSpectator()){ //fill it for all gamemodes except spectator
-			foreach(Item::getCreativeItems() as $i => $item){
-				$pk->items[$i] = clone $item;
-			}
-		}
-
-		$this->getHolder()->dataPacket($pk);
-	}
-
 	/**
 	 * This override is here for documentation and code completion purposes only.
 	 * @return Human|Player
