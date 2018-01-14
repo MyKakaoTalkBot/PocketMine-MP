@@ -2370,7 +2370,7 @@ class Level implements ChunkManager, Metadatable{
 			$this->loadChunk($chunkX, $chunkZ);
 		}
 
-		while(!isset($this->chunks[$chunkHash]);
+		while(!isset($this->chunks[$chunkHash]));
 		return $this->chunks[$chunkHash];
 	}
 
